@@ -31,7 +31,7 @@ if libale_detected == false
 
     _prefix = joinpath(BinDeps.depsdir(libale_c), "usr")
     _srcdir = joinpath(BinDeps.depsdir(libale_c), "src")
-    _aledir = joinpath(_srcdir, "Arcade-Learning-Environment-0.5.1")
+    _aledir = joinpath(_srcdir, "Arcade-Learning-Environment-0.5.2")
     _cmakedir = joinpath(_aledir, "build")
     _libdir = joinpath(_prefix, "lib")
     provides(BuildProcess,
@@ -40,14 +40,14 @@ if libale_detected == false
             CreateDirectory(_libdir)
             @build_steps begin
                 ChangeDirectory(_srcdir)
-                `rm -rf Arcade-Learning-Environment-0.5.1`
+                `rm -rf Arcade-Learning-Environment-0.5.2`
                 if is_apple()
-                    `curl -o $_srcdir/v0.5.1.tar.gz -LJO https://github.com/mgbellemare/Arcade-Learning-Environment/archive/v0.5.1.tar.gz`
+                    `curl -o $_srcdir/v0.5.2.tar.gz -LJO https://github.com/mgbellemare/Arcade-Learning-Environment/archive/v0.5.2.tar.gz`
                 else is_linux()
-                    `wget -O $_srcdir/v0.5.1.tar.gz --no-check-certificate --content-disposition https://github.com/mgbellemare/Arcade-Learning-Environment/archive/v0.5.1.tar.gz`
+                    `wget -O $_srcdir/v0.5.2.tar.gz --no-check-certificate --content-disposition https://github.com/mgbellemare/Arcade-Learning-Environment/archive/v0.5.2.tar.gz`
                 end
-                `tar -xvzf $_srcdir/v0.5.1.tar.gz`
-                `rm -rf $_srcdir/v0.5.1.tar.gz`
+                `tar -xvzf $_srcdir/v0.5.2.tar.gz`
+                `rm -rf $_srcdir/v0.5.2.tar.gz`
                 FileRule(joinpath(_libdir, "libale_c.so"),
                     @build_steps begin
                         ChangeDirectory("$_aledir")
