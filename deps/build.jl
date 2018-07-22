@@ -16,21 +16,22 @@ end
 using BinDeps
 @BinDeps.setup
 if libale_detected == false
+    
     if is_windows()
-	info("This package currently does not support Windows.")
+        info("This package currently does not support Windows.")
         info("You may want to try using the prebuilt libale_c.dll file from")
         info("https://github.com/pkulchenko/alecwrap and setting the")
         info("LIBALE_HOME environment variable to the directory containing")
         info("the file, then issuing Pkg.build(\"ArcadeLearningEnvironment\")")
         error("Automatic building of libale_c.dll on Windows is currently not supported yet.")
     end
-
+    
     libale_c = library_dependency("libale_c",
         aliases=["libale_c.so", "libale_c.dll"])
 
     _prefix = joinpath(BinDeps.depsdir(libale_c), "usr")
     _srcdir = joinpath(BinDeps.depsdir(libale_c), "src")
-    _aledir = joinpath(_srcdir, "Arcade-Learning-Environment-0.5.2")
+    _aledir = joinpath(_srcdir, "Arcade-Learning-Environment-0.5.1")
     _cmakedir = joinpath(_aledir, "build")
     _libdir = joinpath(_prefix, "lib")
     provides(BuildProcess,
@@ -39,10 +40,14 @@ if libale_detected == false
             CreateDirectory(_libdir)
             @build_steps begin
                 ChangeDirectory(_srcdir)
-                `rm -rf Arcade-Learning-Environment-0.5.2`
-                `rm -rf v0.5.2.zip`
-                `wget https://github.com/mgbellemare/Arcade-Learning-Environment/archive/v0.5.2.zip`
-                `unzip v0.5.2.zip`
+                `rm -rf Arcade-Learning-Environment-0.5.1`
+                if is_apple()
+                    `curl -o $_srcdir/v0.5.1.tar.gz -LJO https://github.com/mgbellemare/Arcade-Learning-Environment/archive/v0.5.1.tar.gz`
+                else is_linux()
+                    `wget -O $_srcdir/v0.5.1.tar.gz --no-check-certificate --content-disposition https://github.com/mgbellemare/Arcade-Learning-Environment/archive/v0.5.1.tar.gz`
+                end
+                `tar -xvzf $_srcdir/v0.5.1.tar.gz`
+                `rm -rf $_srcdir/v0.5.1.tar.gz`
                 FileRule(joinpath(_libdir, "libale_c.so"),
                     @build_steps begin
                         ChangeDirectory("$_aledir")
